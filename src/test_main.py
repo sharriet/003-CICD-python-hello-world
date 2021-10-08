@@ -10,7 +10,7 @@ def client():
 
 
 def test_hello_world_message_from_index():
-    assert index() == 'Hello from main'
+    assert index() == 'Hello world'
 
 
 def test_hello_world_message_from_client(client):
