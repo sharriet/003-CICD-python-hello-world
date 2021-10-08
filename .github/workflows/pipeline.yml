@@ -1,0 +1,72 @@
+name: 003 Pipeline example
+
+on:
+  push:
+    branches: [main]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          cd src
+          python -m pip install --upgrade pip
+          mkdir -p dependencies
+          pip download --destination-directory ./dependencies/ -r requirements.txt
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: python-dependencies-artifact
+          path: ./dependencies/
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: download dependencies
+        uses: actions/download-artifact@master
+        with:
+          name: python-dependencies-artifact
+          path: ./dependencies/
+
+      - name: Install dependencies
+        run: |
+          pip install dependencies/*
+
+      - name: Lint with pylint
+        run: |
+          cd src/
+          pylint main.py || exit 0
+
+      - name: Run the unit tests
+        run: |
+          cd src/
+          pytest -v
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Deploy to Heroku
+        run: |
+          git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
+          git push heroku `git subtree split --prefix src main`:main --force
