@@ -21,8 +21,8 @@ jobs:
         run: |
           cd src
           python -m pip install --upgrade pip
-          mkdir -p dependencies
-          pip download --destination-directory ./dependencies/ -r requirements.txt
+          mkdir -p ../dependencies
+          pip download --destination-directory ../dependencies/ -r requirements.txt
 
       - uses: actions/upload-artifact@master
         with:
