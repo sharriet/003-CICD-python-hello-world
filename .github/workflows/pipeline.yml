@@ -67,6 +67,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Deploy to Heroku
-        run: |
-          git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
-          git push heroku `git subtree split --prefix src main`:/refs/heads/main --force
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
