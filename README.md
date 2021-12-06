@@ -2,7 +2,7 @@
 
 This is a very simple CI/CD pipeline written with GitHub actions.
 
-You'll find the pipeline script in the workflows folder. It consistes of 3 'jobs':
+You'll find the pipeline script in the .github/workflows folder. It consistes of 3 'jobs':
 + Build (build the app)
 + Test (run the test suite)
 + Deploy (deploy on Heroku)
